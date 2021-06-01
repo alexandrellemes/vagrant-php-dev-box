@@ -1,106 +1,95 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant::Config.run do |config|
-  # All Vagrant configuration is done here. The most common configuration
-  # options are documented and commented below. For a complete reference,
-  # please see the online documentation at vagrantup.com.
+# Alerta para instalação e configuração do plugin vbguest para atualização do
+# VirtualBox Guest Additions
+unless Vagrant.has_plugin?("vagrant-vbguest")
+  warn "\n\n**********************************************************\n\n"+
+       "                          ATENÇAO !!!                        \n\n"+
+       "Não foi localizado o plugin vagrant-vbguest na máquina host. \n\n"+
+       "Recomendamos seu uso para evitar incompatibilidades de versões \n"+
+       "entre o Virtualbox e VBGuest Addition, impactando o          \n"+
+       "compartilhamento de pastas. \n\n"+
+       "Para solucionar o problema, execute o seguinte comando no \n"+
+       "diretório raiz do projeto. \n\n"+
+       "> vagrant plugin install vagrant-vbguest                     \n"+
+       "\n********************************************************** \n\n"+
+       " Pressione ENTER para continuar ou (Ctrl + C) para finalizar ... \n\n"
 
-  # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "precise64"
+  $stdin.gets; puts "\n"
+end
 
-  # The url from where the 'config.vm.box' box will be fetched if it
-  # doesn't already exist on the user's system.
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-
-  # Boot with a GUI so you can see the screen. (Default is headless)
-  # config.vm.boot_mode = :gui
-
-  # Assign this VM to a host-only network IP, allowing you to access it
-  # via the IP. Host-only networks can talk to the host machine as well as
-  # any other machines on the same network, but cannot be accessed (through this
-  # network interface) by any external networks.
-  config.vm.network :hostonly, "192.168.33.10"
-
-  # Assign this VM to a bridged network, allowing you to connect directly to a
-  # network using the host's network device. This makes the VM appear as another
-  # physical device on your network.
-  # config.vm.network :bridged
-
-  # Forward a port from the guest to the host, which allows for outside
-  # computers to access the VM, whereas host only networking does not.
-  config.vm.forward_port 80, 8080       #apache
-  config.vm.forward_port 81, 8181       #nginx
-  config.vm.forward_port 27017, 27017   #mongodb
-  config.vm.forward_port 3306, 3306     #mysql
-
-  # Share an additional folder to the guest VM. The first argument is
-  # an identifier, the second is the path on the guest to mount the
-  # folder, and the third is the path on the host to the actual folder.
-  # config.vm.share_folder "v-data", "/vagrant_data", "../data"
-
-  # Enable provisioning with Puppet stand alone.  Puppet manifests
-  # are contained in a directory path relative to this Vagrantfile.
-  # You will need to create the manifests directory and a manifest in
-  # the file precise64.pp in the manifests_path directory.
-  #
-  # An example Puppet manifest to provision the message of the day:
-  #
-  # # group { "puppet":
-  # #   ensure => "present",
-  # # }
-  # #
-  # # File { owner => 0, group => 0, mode => 0644 }
-  # #
-  # # file { '/etc/motd':
-  # #   content => "Welcome to your Vagrant-built virtual machine!
-  # #               Managed by Puppet.\n"
-  # # }
-  #
-  config.vm.provision :puppet do |puppet|
-    puppet.manifests_path = "puppet/manifests"
-    puppet.module_path = "puppet/modules"
-    puppet.options = ['--verbose']
+Vagrant.configure(2) do |config|
+  ## Instalação de plugin para configuração automática do disco
+  required_plugins = %w( vagrant-vbguest vagrant-disksize vagrant-env)
+  _retry = false
+  required_plugins.each do |plugin|
+    unless Vagrant.has_plugin? plugin
+      system "vagrant plugin install #{plugin}"
+      _retry=true
+    end
   end
 
-  # Enable provisioning with chef solo, specifying a cookbooks path, roles
-  # path, and data_bags path (all relative to this Vagrantfile), and adding 
-  # some recipes and/or roles.
-  #
-  # config.vm.provision :chef_solo do |chef|
-  #   chef.cookbooks_path = "../my-recipes/cookbooks"
-  #   chef.roles_path = "../my-recipes/roles"
-  #   chef.data_bags_path = "../my-recipes/data_bags"
-  #   chef.add_recipe "mysql"
-  #   chef.add_role "web"
-  #
-  #   # You may also specify custom JSON attributes:
-  #   chef.json = { :mysql_password => "foo" }
-  # end
+  if (_retry)
+    exec "vagrant " + ARGV.join(' ')
+  end
+  
+  # Box do vagrant contendo o ambiente de desenvolvimento do SEI
+  config.vm.box = "bento/ubuntu-20.04"
+#   config.vm.box = "hashicorp/precise64"
+#   config.vm.box = "processoeletronico/sei-3.1"
+#   config.vm.box = "centos/7"
 
-  # Enable provisioning with chef server, specifying the chef server URL,
-  # and the path to the validation key (relative to this Vagrantfile).
-  #
-  # The Opscode Platform uses HTTPS. Substitute your organization for
-  # ORGNAME in the URL and validation key.
-  #
-  # If you have your own Chef Server, use the appropriate URL, which may be
-  # HTTP instead of HTTPS depending on your configuration. Also change the
-  # validation key to validation.pem.
-  #
-  # config.vm.provision :chef_client do |chef|
-  #   chef.chef_server_url = "https://api.opscode.com/organizations/ORGNAME"
-  #   chef.validation_key_path = "ORGNAME-validator.pem"
-  # end
-  #
-  # If you're using the Opscode platform, your validator client is
-  # ORGNAME-validator, replacing ORGNAME with your organization name.
-  #
-  # IF you have your own Chef Server, the default validation client name is
-  # chef-validator, unless you changed the configuration.
-  #
-  #   chef.validation_client_name = "ORGNAME-validator"
+  config.env.enable # Enable vagrant-env(.env)
 
-  # allow symlinks in vm
-  config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+  config.disksize.size = "100GB"
+  config.vbguest.auto_update = true
+  config.vbguest.no_remote = false
+  config.vbguest.iso_mount_point = "/media"
+  config.vbguest.installer_options = { allow_kernel_upgrade: true }
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--memory", ENV['HOST_MEMORY'], "--usb", "off", "--audio", "none"]
+  end
+  
+  # Configuração do diretório local onde deverá estar disponibilizado os códigos-fontes do SEI (sei, sip, infra_php, infra_css, infra_js)
+  config.vm.synced_folder ENV['DISCODOCKER_HOME'], "/home/docker/discoDocker", mount_options: ["dmode=777", "fmode=777"]
+  config.vm.synced_folder ".", "/home/docker/discoDocker/docker", mount_options: ["dmode=777", "fmode=777"]
+
+
+  # Configuração do redirecionamento entre Máquina Virtual e Host
+  config.vm.network :forwarded_port, guest: 80, host: 80 # SIP e SEI (Apache)
+  config.vm.network :forwarded_port, guest: 9000, host: 9000 # Portainer
+#   config.vm.network :forwarded_port, guest: 1521, host: 1521 # Banco de Dados (Oracle)
+#   config.vm.network :forwarded_port, guest: 1433, host: 1433 # Banco de Dados (SQL Server)
+#   config.vm.network :forwarded_port, guest: 3306, host: 3306 # Banco de Dados (Mysql)
+#   config.vm.network :forwarded_port, guest: 8983, host: 8983 # Solr Indexer (Jetty)
+#   config.vm.network :forwarded_port, guest: 8080, host: 8080 # Jod Converter
+#   config.vm.network :forwarded_port, guest: 1080, host: 1080 # MailCatcher
+
+  config.vm.provision "install-docker", type: "shell", path: "./install-docker.sh"
+  config.vm.provision "install-docker-compose", type: "shell", path: "./install-docker-compose.sh"
+  config.vm.provision "install-docker-machines", type: "shell", path: "./run.sh"
+  config.vm.post_up_message = <<-EOF
+
+=========================================================================
+  INICIALIZAÇÃO DO AMBIENTE DE DESENVOLVIMENTO FINALIZADA COM SUCESSO ! 
+=========================================================================
+
+= Endereços de Acesso à Aplicação ========================================
+Web ............................... http://localhost
+
+
+= Comandos Úteis =========================================================
+vagrant up                        - Inicializar ambiente do SEI
+vagrant halt                      - Desligar ambiente
+vagrant destroy                   - Destruir ambiente e base de testes
+vagrant ssh                       - Acessar máquina virtual
+vagrant status                    - Verificar situação atual do ambiente
+
+= Debug =========================================================
+PHP xDebug 3
+Porta: 9003
+
+EOF
 end

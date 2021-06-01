@@ -1,3 +1,6 @@
+# vagrant-php56-dev-box
+Vagrant box com PHP56 para atender projetos antigos em PHP.
+
 Set up a PHP development box super fast
 =======================================
 
@@ -5,11 +8,37 @@ Installation
 ------------
 
 * Install vagrant using the installation instructions in the [Getting Started document](http://vagrantup.com/v1/docs/getting-started/index.html)
-* Add a Ubuntu Precise box using the [available official boxes](https://github.com/mitchellh/vagrant/wiki/Available-Vagrant-Boxes), for example: ```vagrant box add precise64 http://files.vagrantup.com/precise64.box```
 * Clone this repository
-* Install submodules with ```git submodule update --init```
-* After running ```vagrant up``` the box is set up using Puppet
-* You should now have your working Symfony2 Standard Edition under http://localhost:8181/app_dev.php
+* After running ```vagrant up``` 
+
+* To activate a site:
+
+Tree of this project
+
+ /discoDocker
+
+  +----- vagrant
+
+         +---- sei-vagrant-php56
+               
+                + Esse projeto.. Vagrant...
+
+  +----- apache
+
+         +---- conf
+               +--- meu.projeto.dev.conf
+
+         +---- projetos
+     
+               +------ meu.projeto.dev
+         
+
+vagrant ssh
+
+sudo docker-compose exec php-apache sh -c "a2ensite meu.site.desenv"
+
+sudo docker-compose exec php-apache sh -c "service apache2 reload"
+
 
 Installed components
 --------------------
@@ -29,16 +58,3 @@ Installed components
 * [capifony](http://capifony.org/)
 * Most of the [phpqatools](http://www.phpqatools.org) using puppet module (https://github.com/rafaelfelix/puppet-phpqatools)
 
-Debugging
----------
-
-If you want to debug your cli application using xdebug for example with Netbeans just run this command before executing the cli app:
-
-.. code-block:: sh
-
-    $ export XDEBUG_CONFIG="idekey=netbeans-xdebug remote_host=192.168.33.1 profiler_enable=1 default_enable=1 remote_enable=1 remote_handler=dbgp remote_port=9000 remote_autostart=0"
-
-TODO
-----
-
-* Install and configure xhprof

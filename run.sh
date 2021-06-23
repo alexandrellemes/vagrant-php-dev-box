@@ -11,24 +11,24 @@ echo 'Monta os containers...'
 sudo docker-compose up -d --build
 
 #echo 'Atualiza a maquina virtual'
-#sudo docker-compose exec php-apache apt update
-#sudo docker-compose exec php-apache apt -y upgrade
+#sudo docker exec -it php-apache apt update
+#sudo docker exec -it php-apache apt -y upgrade
 
 echo 'Desabilita o site default'
-sudo docker-compose exec php-apache sh -c "a2dissite 000-default"
+#sudo docker exec -it php-apache sh -c "a2dissite 000-default"
 
 #echo 'Habilita o site de desenvolvimento'
-sudo docker-compose exec php-apache sh -c "a2ensite seides.intra.goias.gov.br"
+sudo docker exec -it php-apache sh -c "a2ensite meusite.local"
 
 echo 'Reinicia o apache2'
-sudo docker-compose exec php-apache sh -c "service apache2 reload"
+sudo docker exec -it php-apache sh -c "service apache2 reload"
 
 #echo 'Reinicia o memcached'
-#sudo docker-compose exec memcached service memcached restart
+#sudo docker exec -it memcached service memcached restart
 
 echo 'Modulos habilitados...'
-sudo docker-compose exec php-apache php -m | grep -E 'memcache|oci8|uploadprogress|mcrypt'
+sudo docker exec -it php-apache php -m | grep -E 'memcache|oci8|uploadprogress|mcrypt'
 
 #echo 'Acesso a maquina virtual'
-#sudo docker-compose exec php-apache bash
+#sudo docker exec -it php-apache bash
 

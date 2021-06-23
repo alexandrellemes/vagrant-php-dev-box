@@ -85,7 +85,7 @@ RUN apt-get update
 #                   php-cas php-db php-solr pear-channels libmcrypt-dev libaio1
 
 # Instala as versões de PHP
-RUN apt install -y php5.6 php5.6-cli php5.6-dev php5.6-xml php5.6-soap php5.6-xmlrpc php5.6-curl php5.6-gd php5.6-mbstring php5.6-mcrypt php5.6-zip php5.6-opcache php5.6-json php5.6-common php5.6-ldap php5.6-intl
+#RUN apt install -y php5.6 php5.6-cli php5.6-dev php5.6-xml php5.6-soap php5.6-xmlrpc php5.6-curl php5.6-gd php5.6-mbstring php5.6-mcrypt php5.6-zip php5.6-opcache php5.6-json php5.6-common php5.6-ldap php5.6-intl
 #RUN apt install -y php7.0 php7.0-cli php7.0-dev php7.0-xml php7.0-soap php7.0-xmlrpc php7.0-curl php7.0-gd php7.0-mbstring php7.0-mcrypt php7.0-zip php7.0-opcache php7.0-json php7.0-common php7.0-ldap php7.0-intl
 #RUN apt install -y php7.1 php7.1-cli php7.1-dev php7.1-xml php7.1-soap php7.1-xmlrpc php7.1-curl php7.1-gd php7.1-mbstring php7.1-mcrypt php7.1-zip php7.1-opcache php7.1-json php7.1-common php7.1-ldap php7.1-intl
 #RUN apt install -y php7.2 php7.2-cli php7.2-dev php7.2-xml php7.2-soap php7.2-xmlrpc php7.2-curl php7.2-gd php7.2-mbstring               php7.2-zip php7.2-opcache php7.2-json php7.2-common php7.2-ldap php7.2-intl
@@ -95,7 +95,7 @@ RUN apt install -y php7.4 php7.4-cli php7.4-dev php7.4-xml php7.4-soap php7.4-xm
 RUN apt-cache search php8.0
 RUN apt install -y php8.0 php8.0-cli php8.0-dev php8.0-xml php8.0-soap php8.0-curl php8.0-gd php8.0-mbstring                php8.0-zip php8.0-opcache php8.0-common php8.0-ldap php8.0-intl
 
-RUN apt install -y php5.6-bcmath php5.6-curl php5.6-pgsql php5.6-mysql
+#RUN apt install -y php5.6-bcmath php5.6-curl php5.6-pgsql php5.6-mysql
 #RUN apt install -y php7.0-bcmath php7.0-curl php7.0-pgsql php7.0-mysql
 #RUN apt install -y php7.1-bcmath php7.1-curl php7.1-pgsql php7.1-mysql
 #RUN apt install -y php7.2-bcmath php7.2-curl php7.2-pgsql php7.2-mysql
@@ -118,7 +118,7 @@ RUN apt update
 RUN pecl channel-update pecl.php.net
 
 # Desabilita o módulo PHP no apache2.
-RUN a2dismod php5.6
+#RUN a2dismod php5.6
 #RUN a2dismod php7.0
 #RUN a2dismod php7.1
 #RUN a2dismod php7.2
@@ -213,7 +213,7 @@ COPY oci8.ini /etc/php/7.4/mods-available/
 COPY oci8.ini /etc/php/8.0/mods-available/
 #COPY oci8.ini /etc/php/${PHP_VERSION}/mods-available/
 
-COPY uploadprogress.ini /etc/php/5.6/mods-available/
+#COPY uploadprogress.ini /etc/php/5.6/mods-available/
 #COPY uploadprogress.ini /etc/php/7.0/mods-available/
 #COPY uploadprogress.ini /etc/php/7.1/mods-available/
 #COPY uploadprogress.ini /etc/php/7.2/mods-available/

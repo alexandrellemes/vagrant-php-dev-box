@@ -171,8 +171,9 @@ RUN chown -R root:www-data /opt/oracle
 #Use 'pecl install oci8-2.0.12' to install for PHP 5.2 - PHP 5.6.
 #
 #Use 'pecl install oci8-1.4.10' to install for PHP 4.3.9 - PHP 5.1.
-#RUN echo 'shared,instantclient,/opt/oracle/instantclient_12_2' | pecl install -f oci8
-RUN echo 'shared,instantclient,/opt/oracle/instantclient_12_2' | pecl install -f oci8-2.2.0
+
+RUN echo 'shared,instantclient,/opt/oracle/instantclient_12_2' | pecl install -f oci8
+#RUN echo 'shared,instantclient,/opt/oracle/instantclient_12_2' | pecl install -f oci8-2.2.0
 
 # Set up the Oracle environment variables
 ENV ORACLE_HOME /opt/oracle/instantclient_12_2

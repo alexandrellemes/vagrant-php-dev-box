@@ -1,4 +1,4 @@
-# vagrant-php56-dev-box
+# vagrant-php-dev-box
 Vagrant box com PHP56 para atender projetos antigos em PHP.
 
 Set up a PHP development box super fast
@@ -8,38 +8,42 @@ Installation
 ------------
 
 * Install vagrant using the installation instructions in the [Getting Started document](http://vagrantup.com/v1/docs/getting-started/index.html)
+
 * Clone this repository
 * After running ```vagrant up``` 
 
 * To activate a site:
 
-Tree of this project
+1. Create a configuration file of your site (virtualhost) on the path: discoDocker/apache/conf.
+2. Activate your site:
 
- /discoDocker
+$ vagrant ssh
 
-  +----- vagrant
+$ sudo docker-compose exec php-apache sh -c "a2ensite meu.site"
 
-         +---- sei-vagrant-php56
-               
-                + Esse projeto.. Vagrant...
+$ sudo docker-compose exec php-apache sh -c "service apache2 reload"
 
-  +----- apache
+3. Change your local file hosts:
+    - Windows: 
+      - \Windows\System32\drivers\etc\hosts
+    - Linux: 
+      - /etc/hosts   
 
-         +---- conf
-               +--- meu.projeto.dev.conf
+4. Access by browser your application.
 
-         +---- projetos
-     
-               +------ meu.projeto.dev
-         
+This scripts contains:
+  - info.php
+    - Information abou your Apache Server.
+    
+  - mysqltest.php
+    - A brief test on your MySQL Server.
+    
+  - oracletest.php
+    - A brief test on you Oracle Server.
 
-vagrant ssh
-
-sudo docker-compose exec php-apache sh -c "a2ensite meu.site.desenv"
-
-sudo docker-compose exec php-apache sh -c "service apache2 reload"
-
-
+  - postgrestest.php
+    - A brief test on your PostGreSQL Server.
+    
 Installed components
 --------------------
 

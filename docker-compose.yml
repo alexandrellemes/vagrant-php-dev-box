@@ -48,7 +48,7 @@ services:
     container_name: php-apache
     restart: always
     build:
-      context: ./files/php-5.6-apache
+      context: ./files/php-apache
       args:
         URL_PROXY: ${URL_PROXY}
         PHP_VERSION: 5.6

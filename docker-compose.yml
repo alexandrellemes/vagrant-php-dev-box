@@ -51,7 +51,7 @@ services:
       context: ./files/php-apache
       args:
         URL_PROXY: ${URL_PROXY}
-        PHP_VERSION: 5.6
+        PHP_VERSION: ${PHP_VERSION}
         HOME: ${HOME_DIR}
     volumes:
       - ${HOME_DIR}/discoDocker/apache/projetos/:/var/www/html/
@@ -67,9 +67,7 @@ services:
       - memcached
     extra_hosts:
       - "localhost : 127.0.0.1"
-      - "seides.intra.goias.gov.br : 127.0.0.1"
-      - "exa01-scan7.intra.goias.gov.br : 10.6.219.75"
-      - "appseidessolr01.intra.goias.gov.br : 10.6.1.175"
+      - "meusite.local : 127.0.0.1"
     networks:
       - code-network
 
